@@ -82,7 +82,7 @@ void CImageProcessing2LDJ20200721View::OnDraw(CDC* pDC)
 
 
 }
-
+ 
 
 // CImageProcessing2LDJ20200721View 인쇄
 
