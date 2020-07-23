@@ -59,4 +59,20 @@ public:
 	afx_msg void OnUpSampling();
 
 	afx_msg void OnQuantization();
+//	afx_msg void OnConst();
+//	afx_msg void OnSumConst();
+//	afx_msg void OnSubconst();
+	afx_msg void OnSumConst();
+	afx_msg void OnSubConst();
+	afx_msg void OnMulConst();
+	afx_msg void OnDivConst();
+	afx_msg void OnAndOperate();
+	afx_msg void OnOrOperate();
+	afx_msg void OnXorOperate();
+	afx_msg void OnNegaTransform();
+	afx_msg void OnGammaCorrection();
+//	afx_msg void OnBinaryzation();
+	afx_msg void OnBinarization();
+	afx_msg void OnRangeOfStress();
+	afx_msg void OnHistStretch();
 };

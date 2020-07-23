@@ -183,10 +183,12 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CConstDlg.h" />
     <ClInclude Include="CDownSampleDlg.h" />
     <ClInclude Include="ChildFrm.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="CQUANTIZATIONDlg.h" />
+    <ClInclude Include="CRangeOfStressDlg.h" />
     <ClInclude Include="CUpSampleDlg.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="framework.h" />
@@ -202,10 +204,12 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CConstDlg.cpp" />
     <ClCompile Include="CDownSampleDlg.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="CQUANTIZATIONDlg.cpp" />
+    <ClCompile Include="CRangeOfStressDlg.cpp" />
     <ClCompile Include="CUpSampleDlg.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="ImageProcessing2_LDJ_20200721.cpp" />

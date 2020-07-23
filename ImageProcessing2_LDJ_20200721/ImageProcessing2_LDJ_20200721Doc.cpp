@@ -15,6 +15,9 @@
 #include "CUpSampleDlg.h" // 대화상자 사용을 위한 헤더 선언
 #include "CQuantizationDlg.h" // 대화상자 사용을 위한 헤더 선언
 #include "math.h" // 수학 함수 사용을 위한 헤더 선언
+#include "CConstDlg.h" // 상수 입력 대화상자 사용을 위한 헤더 선언
+#include "CRangeOfStressDlg.h" // 범위 강조 대화상자를 위한 헤더 선언
+
 #include <propkey.h>
 
 #ifdef _DEBUG
@@ -29,6 +32,22 @@ BEGIN_MESSAGE_MAP(CImageProcessing2LDJ20200721Doc, CDocument)
 	ON_COMMAND(ID_DOWN_SAMPLE, &CImageProcessing2LDJ20200721Doc::OnDownSampling)
 	ON_COMMAND(ID_UP_SAMPLE, &CImageProcessing2LDJ20200721Doc::OnUpSampling)
 	ON_COMMAND(ID_QUANTIZATION, &CImageProcessing2LDJ20200721Doc::OnQuantization)
+//	ON_COMMAND(ID_CONST, &CImageProcessing2LDJ20200721Doc::OnConst)
+//ON_COMMAND(ID_CONST, &CImageProcessing2LDJ20200721Doc::OnSumConst)
+//ON_COMMAND(ID_SUBCONST, &CImageProcessing2LDJ20200721Doc::OnSubconst)
+ON_COMMAND(ID_CONST, &CImageProcessing2LDJ20200721Doc::OnSumConst)
+ON_COMMAND(ID_SUBCONST, &CImageProcessing2LDJ20200721Doc::OnSubConst)
+ON_COMMAND(ID_MULCONST, &CImageProcessing2LDJ20200721Doc::OnMulConst)
+ON_COMMAND(ID_DIVCONST, &CImageProcessing2LDJ20200721Doc::OnDivConst)
+ON_COMMAND(ID_AND_OPERATE, &CImageProcessing2LDJ20200721Doc::OnAndOperate)
+ON_COMMAND(ID_OR_OPERATE, &CImageProcessing2LDJ20200721Doc::OnOrOperate)
+ON_COMMAND(ID_XOR_OPERATE, &CImageProcessing2LDJ20200721Doc::OnXorOperate)
+ON_COMMAND(ID_NEGA_TRANSFORM, &CImageProcessing2LDJ20200721Doc::OnNegaTransform)
+ON_COMMAND(ID_GAMMA_CORRECTION, &CImageProcessing2LDJ20200721Doc::OnGammaCorrection)
+//ON_COMMAND(ID_BINARYZATION, &CImageProcessing2LDJ20200721Doc::OnBinaryzation)
+ON_COMMAND(ID_BINARIZATION, &CImageProcessing2LDJ20200721Doc::OnBinarization)
+ON_COMMAND(ID_RANGE_OF_STRESS, &CImageProcessing2LDJ20200721Doc::OnRangeOfStress)
+ON_COMMAND(ID_HIST_STRETCH, &CImageProcessing2LDJ20200721Doc::OnHistStretch)
 END_MESSAGE_MAP()
 
 
@@ -271,4 +290,319 @@ void CImageProcessing2LDJ20200721Doc::OnQuantization()
 			// 결과 영상 생성
 		}
 	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnSumConst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg; // 상수 값을 입력받는 대화상자
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] + dlg.m_Const >= 255)
+				m_OutputImage[i] = 255;
+			// 출력 값이 255보다 크면 255 출력
+			else
+				m_OutputImage[i] = (unsigned char)(m_InputImage[i] + dlg.m_Const);
+			// 상수 값과 화소 값과의 덧셈
+		}
+	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnSubConst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] - dlg.m_Const < 0)
+				m_OutputImage[i] = 0; // 출력 값이 255보다 크면 255를 출력
+			else
+				m_OutputImage[i]
+				= (unsigned char)(m_InputImage[i] - dlg.m_Const);
+			// 상수 값과 화소 값과의 뺄셈
+		}
+	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnMulConst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] * dlg.m_Const > 255)
+				m_OutputImage[i] = 255;
+			// 곱의 값이 255보다 크면 255를 출력
+			else if (m_InputImage[i] * dlg.m_Const < 0)
+				m_OutputImage[i] = 0;
+			// 곱의 값이 0보다 작으면 0을 출력
+			else
+				m_OutputImage[i]
+				= (unsigned char)(m_InputImage[i] * dlg.m_Const);
+			// 상수 값과 화소 값 곱셈
+		}
+	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnDivConst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] / dlg.m_Const > 255)
+				m_OutputImage[i] = 255;
+			// 나눗셈의 값이 255보다 크면 255를 출력
+			else if (m_InputImage[i] / dlg.m_Const < 0)
+				m_OutputImage[i] = 0;
+			// 나눗셈의 값이 0보다 작으면 0을 출력
+			else
+				m_OutputImage[i]
+				= (unsigned char)(m_InputImage[i] / dlg.m_Const);
+			// 상수 값과 화소 값 나눗셈
+		}
+	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnAndOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 AND 연산
+			if ((m_InputImage[i] & (unsigned char)dlg.m_Const) >= 255)
+			{
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] & (unsigned char)dlg.m_Const) < 0)
+			{
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i]
+					& (unsigned char)dlg.m_Const);
+			}
+		}
+	}
+
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnOrOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 OR 연산
+			if ((m_InputImage[i] | (unsigned char)dlg.m_Const) >= 255) {
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] | (unsigned char)dlg.m_Const) < 0) {
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i] |
+					(unsigned char) dlg.m_Const);
+			}
+		}
+	}
+
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnXorOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 비트 단위 XOR 연산
+			if ((m_InputImage[i] ^ (unsigned char)dlg.m_Const) >= 255) {
+				m_OutputImage[i] = 255;
+			}
+			else if ((m_InputImage[i] ^ (unsigned char)dlg.m_Const) < 0) {
+				m_OutputImage[i] = 0;
+			}
+			else {
+				m_OutputImage[i] = (m_InputImage[i]
+					^ (unsigned char)dlg.m_Const);
+			}
+		}
+	}
+
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnNegaTransform()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	for (i = 0; i < m_size; i++)
+		m_OutputImage[i] = 255 - m_InputImage[i]; // 영상 반전을 수행
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnGammaCorrection()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	double temp;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			temp = pow(m_InputImage[i], 1 / dlg.m_Const);
+			// 감마 값 계산
+			if (temp < 0)
+				m_OutputImage[i] = 0;
+			else if (temp > 255)
+				m_OutputImage[i] = 255;
+			else
+				m_OutputImage[i] = (unsigned char)temp;
+		}
+	}
+
+}
+
+
+//void CImageProcessing2LDJ20200721Doc::OnBinaryzation()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//	CConstDlg dlg;
+//	int i;
+//	m_Re_height = m_height;
+//	m_Re_width = m_width;
+//	m_Re_size = m_Re_height * m_Re_width;
+//	m_OutputImage = new unsigned char[m_Re_size];
+//	if (dlg.DoModal() == IDOK) {
+//		for (i = 0; i < m_size; i++) {
+//			if (m_InputImage[i] >= dlg.m_Const)
+//				m_OutputImage[i] = 255; // 임계 값보다 크면 255 출력
+//			else
+//				m_OutputImage[i] = 0; // 임계 값보다 작으면 0 출력
+//		}
+//	}
+//
+//}
+
+
+void CImageProcessing2LDJ20200721Doc::OnBinarization()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CConstDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_InputImage[i] >= dlg.m_Const)
+				m_OutputImage[i] = 255; // 임계 값보다 크면 255 출력
+			else
+				m_OutputImage[i] = 0; // 임계 값보다 작으면 0 출력
+		}
+	}
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnRangeOfStress()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CRangeOfStressDlg dlg;
+	int i;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	m_OutputImage = new unsigned char[m_Re_size];
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			// 입력 값이 강조 시작 값과 강조 종료 값 사이에 위치하면 255 출력
+			if (m_InputImage[i] >= dlg.m_StartPoint &&
+				m_InputImage[i] <= dlg.m_EndPoint)
+				m_OutputImage[i] = 255;
+			else
+				m_OutputImage[i] = m_InputImage[i];
+		}
+	}
+
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnHistStretch()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int i;
+	unsigned char LOW, HIGH, MAX, MIN;
+	m_Re_height = m_height;
+	m_Re_width = m_width;
+	m_Re_size = m_Re_height * m_Re_width;
+	LOW = 0;
+	HIGH = 255;
+	MIN = m_InputImage[0]; // 최소값을 찾기 위한 초기값
+	MAX = m_InputImage[0]; // 최대값을 찾기 위한 초기값
+	// 입력 영상의 최소값 찾기
+	for (i = 0; i < m_size; i++) {
+		if (m_InputImage[i] < MIN)
+			MIN = m_InputImage[i];
+	}
+	// 입력 영상의 최대값 찾기
+	for (i = 0; i < m_size; i++) {
+		if (m_InputImage[i] > MAX)
+			MAX = m_InputImage[i];
+	}
+	m_OutputImage = new unsigned char[m_Re_size];
+	// 히스토그램 stretch
+	for (i = 0; i < m_size; i++)
+		m_OutputImage[i] = (unsigned char)((m_InputImage[i] -
+			MIN) * HIGH / (MAX - MIN));
 }

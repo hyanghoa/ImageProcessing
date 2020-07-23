@@ -32,6 +32,19 @@ BEGIN_MESSAGE_MAP(CImageProcessing2LDJ20200721View, CView)
 	ON_COMMAND(ID_DOWN_SAMPLE, &CImageProcessing2LDJ20200721View::OnDownSample)
 	ON_COMMAND(ID_UP_SAMPLE, &CImageProcessing2LDJ20200721View::OnUpSample)
 	ON_COMMAND(ID_QUANTIZATION, &CImageProcessing2LDJ20200721View::OnQuantization)
+	ON_COMMAND(ID_CONST, &CImageProcessing2LDJ20200721View::OnConst)
+	ON_COMMAND(ID_SUBCONST, &CImageProcessing2LDJ20200721View::OnSubconst)
+	ON_COMMAND(ID_MULCONST, &CImageProcessing2LDJ20200721View::OnMulconst)
+	ON_COMMAND(ID_DIVCONST, &CImageProcessing2LDJ20200721View::OnDivconst)
+	ON_COMMAND(ID_AND_OPERATE, &CImageProcessing2LDJ20200721View::OnAndOperate)
+	ON_COMMAND(ID_OR_OPERATE, &CImageProcessing2LDJ20200721View::OnOrOperate)
+	ON_COMMAND(ID_XOR_OPERATE, &CImageProcessing2LDJ20200721View::OnXorOperate)
+	ON_COMMAND(ID_NEGA_TRANSFORM, &CImageProcessing2LDJ20200721View::OnNegaTransform)
+	ON_COMMAND(ID_GAMMA_CORRECTION, &CImageProcessing2LDJ20200721View::OnGammaCorrection)
+	//ON_COMMAND(ID_BINARYZATION, &CImageProcessing2LDJ20200721View::OnBinaryzation)
+	ON_COMMAND(ID_BINARIZATION, &CImageProcessing2LDJ20200721View::OnBinarization)
+	ON_COMMAND(ID_RANGE_OF_STRESS, &CImageProcessing2LDJ20200721View::OnRangeOfStress)
+	ON_COMMAND(ID_HIST_STRETCH, &CImageProcessing2LDJ20200721View::OnHistStretch)
 END_MESSAGE_MAP()
 
 // CImageProcessing2LDJ20200721View 생성/소멸
@@ -176,4 +189,125 @@ void CImageProcessing2LDJ20200721View::OnQuantization()
 	ASSERT_VALID(pDoc);
 	pDoc->OnQuantization(); // Doc 클래스에 OnQuantization 함수 호출
 	Invalidate(TRUE); // 화면 갱신
+}
+
+
+void CImageProcessing2LDJ20200721View::OnConst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	// 도큐먼트 클래스 참조
+	ASSERT_VALID(pDoc); // 인스턴스 주소를 가져옴
+	pDoc->OnSumConst();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnSubconst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();// 도큐먼트 클래스 참조
+	ASSERT_VALID(pDoc); // 인스턴스 주소를 가져옴
+	pDoc->OnSubConst();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMulconst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument(); // 도큐먼트 클래스 참조
+	ASSERT_VALID(pDoc); // 인스턴스 주소를 가져옴
+	pDoc->OnMulConst();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnDivconst()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument(); // 도큐먼트 클래스 참조
+	ASSERT_VALID(pDoc); // 인스턴스 주소를 가져옴
+	pDoc->OnDivConst();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnAndOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnAndOperate();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnOrOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnOrOperate();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnXorOperate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnXorOperate();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnNegaTransform()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnNegaTransform();
+	Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnGammaCorrection()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnGammaCorrection();
+	Invalidate(TRUE);
+}
+
+void CImageProcessing2LDJ20200721View::OnBinarization()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnBinarization();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnRangeOfStress()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnRangeOfStress();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnHistStretch()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHistStretch();
+	Invalidate(TRUE);
 }

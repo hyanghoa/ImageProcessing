@@ -66,6 +66,12 @@
     <ClInclude Include="CQUANTIZATIONDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CConstDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CRangeOfStressDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcessing2_LDJ_20200721.cpp">
@@ -108,6 +114,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CQUANTIZATIONDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CConstDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CRangeOfStressDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
