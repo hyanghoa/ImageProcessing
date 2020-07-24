@@ -121,13 +121,62 @@
 #define ID_RANGE_OF_STRESS              32798
 #define ID_IMAGEPROCESSING_HISTOGRAMSTRECH 32799
 #define ID_HIST_STRETCH                 32800
+#define ID_END_IN_SEARCH                32801
+#define ID_IMAGEPROCESSING_HISTOGRAM    32802
+#define ID_HISTOGRAM                    32803
+#define ID_HISTO_EQUAL                  32804
+#define ID_IMAGEPROCESSING_HISTOSPEC    32805
+#define ID_HISTO_SPEC                   32806
+#define ID_CHAP6_EMBOSSING              32807
+#define ID_EMBOSSING                    32808
+#define ID_EMBOSSING_ONMASKPROCESS      32809
+#define ID_ONMASKPROCESS                32810
+#define ID_EMBOSSING_EMBOSSING          32813
+#define ID_CHAP6_BLURRINGPROCESS        32814
+#define ID_BLURR                        32815
+#define ID_CHAP6_GAUSSIANFILTTER        32816
+#define ID_GAUSSIAN_FILTER              32817
+#define ID_CHAP6_SHARPNING              32818
+#define ID_CHAP6_HPFSHARPENING          32820
+#define ID_SHARPENING                   32821
+#define ID_HPF_SHARPENING               32823
+#define ID_CHAP6_LPFSHARPENING          32824
+#define ID_LPFSHARPENING                32825
+#define ID_CHAP6_6                      32826
+#define ID_CHAP07_DIFFOPERATORHOR       32827
+#define ID_DIFFOPERATORHOR              32828
+#define ID_DIFF_OPERATOR_HOR            32829
+#define ID_CHAP07_HOMOGENOPERATOR       32830
+#define ID_HOMOGEN_OPERATOR             32831
+#define ID_CHAP07_LAPLACIAN             32832
+#define ID_LAPLACIAN                    32833
+#define ID_CHAP06_CHAP08                32834
+#define ID_CHAP08_NEAREST               32835
+#define ID_NEAREST                      32836
+#define ID_CHAP08_BILINEAR              32837
+#define ID_BILINEAR                     32838
+#define ID_CHAP08_MEDIANSUB             32839
+#define ID_MEDIANSUB                    32840
+#define ID_CHAP08_MEANSUB               32841
+#define ID_MEANSUB                      32842
+#define ID_CHAP06_CHAP09                32843
+#define ID_CHAP09_TRANSLATION           32844
+#define ID_TRANSLATION                  32845
+#define ID_CHAP09_MIRRORHOR             32846
+#define ID_MIRRORHOR                    32847
+#define ID_CHAP09_MIRRORVER             32848
+#define ID_MIRRORVER                    32849
+#define ID_CHAP09_ROTATION              32850
+#define ID_ROTATION                     32851
+#define ID_32852                        32852
+#define ID_MASK                         32853
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        328
-#define _APS_NEXT_COMMAND_VALUE         32801
+#define _APS_NEXT_COMMAND_VALUE         32854
 #define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -60,6 +60,32 @@ public:
 	afx_msg void OnBinarization();
 	afx_msg void OnRangeOfStress();
 	afx_msg void OnHistStretch();
+	afx_msg void OnEndInSearch();
+	afx_msg void OnHistogram();
+	afx_msg void OnHistoEqual();
+	afx_msg void OnHistoSpec();
+//	afx_msg void OnEmbossing();
+//	afx_msg void OnEmbossingOnmaskprocess();
+//	afx_msg void OnMaskProcess();
+	afx_msg void OnEmbossing();
+	afx_msg void OnBlurr();
+	afx_msg void OnGaussianFilter();
+//	afx_msg void OnSharpning();
+	afx_msg void OnHpfSharpening();
+	afx_msg void OnSharpening();
+	afx_msg void OnLpfsharpening();
+	afx_msg void OnDiffOperatorHor();
+	afx_msg void OnHomogenOperator();
+	afx_msg void OnLaplacian();
+	afx_msg void OnNearest();
+	afx_msg void OnBilinear();
+	afx_msg void OnMediansub();
+	afx_msg void OnMeansub();
+	afx_msg void OnTranslation();
+	afx_msg void OnMirrorhor();
+	afx_msg void OnMirrorver();
+	afx_msg void OnRotation();
+	afx_msg void OnMask();
 };
 
 #ifndef _DEBUG  // ImageProcessing2_LDJ_20200721View.cpp의 디버그 버전

@@ -41,10 +41,32 @@ BEGIN_MESSAGE_MAP(CImageProcessing2LDJ20200721View, CView)
 	ON_COMMAND(ID_XOR_OPERATE, &CImageProcessing2LDJ20200721View::OnXorOperate)
 	ON_COMMAND(ID_NEGA_TRANSFORM, &CImageProcessing2LDJ20200721View::OnNegaTransform)
 	ON_COMMAND(ID_GAMMA_CORRECTION, &CImageProcessing2LDJ20200721View::OnGammaCorrection)
-	//ON_COMMAND(ID_BINARYZATION, &CImageProcessing2LDJ20200721View::OnBinaryzation)
 	ON_COMMAND(ID_BINARIZATION, &CImageProcessing2LDJ20200721View::OnBinarization)
 	ON_COMMAND(ID_RANGE_OF_STRESS, &CImageProcessing2LDJ20200721View::OnRangeOfStress)
 	ON_COMMAND(ID_HIST_STRETCH, &CImageProcessing2LDJ20200721View::OnHistStretch)
+	ON_COMMAND(ID_END_IN_SEARCH, &CImageProcessing2LDJ20200721View::OnEndInSearch)
+	ON_COMMAND(ID_HISTOGRAM, &CImageProcessing2LDJ20200721View::OnHistogram)
+	ON_COMMAND(ID_HISTO_EQUAL, &CImageProcessing2LDJ20200721View::OnHistoEqual)
+	ON_COMMAND(ID_HISTO_SPEC, &CImageProcessing2LDJ20200721View::OnHistoSpec)
+
+	ON_COMMAND(ID_EMBOSSING, &CImageProcessing2LDJ20200721View::OnEmbossing)
+	ON_COMMAND(ID_BLURR, &CImageProcessing2LDJ20200721View::OnBlurr)
+	ON_COMMAND(ID_GAUSSIAN_FILTER, &CImageProcessing2LDJ20200721View::OnGaussianFilter)
+	ON_COMMAND(ID_HPF_SHARPENING, &CImageProcessing2LDJ20200721View::OnHpfSharpening)
+	ON_COMMAND(ID_SHARPENING, &CImageProcessing2LDJ20200721View::OnSharpening)
+	ON_COMMAND(ID_LPFSHARPENING, &CImageProcessing2LDJ20200721View::OnLpfsharpening)
+	ON_COMMAND(ID_DIFF_OPERATOR_HOR, &CImageProcessing2LDJ20200721View::OnDiffOperatorHor)
+	ON_COMMAND(ID_HOMOGEN_OPERATOR, &CImageProcessing2LDJ20200721View::OnHomogenOperator)
+	ON_COMMAND(ID_LAPLACIAN, &CImageProcessing2LDJ20200721View::OnLaplacian)
+	ON_COMMAND(ID_NEAREST, &CImageProcessing2LDJ20200721View::OnNearest)
+	ON_COMMAND(ID_BILINEAR, &CImageProcessing2LDJ20200721View::OnBilinear)
+	ON_COMMAND(ID_MEDIANSUB, &CImageProcessing2LDJ20200721View::OnMediansub)
+	ON_COMMAND(ID_MEANSUB, &CImageProcessing2LDJ20200721View::OnMeansub)
+	ON_COMMAND(ID_TRANSLATION, &CImageProcessing2LDJ20200721View::OnTranslation)
+	ON_COMMAND(ID_MIRRORHOR, &CImageProcessing2LDJ20200721View::OnMirrorhor)
+	ON_COMMAND(ID_MIRRORVER, &CImageProcessing2LDJ20200721View::OnMirrorver)
+	ON_COMMAND(ID_ROTATION, &CImageProcessing2LDJ20200721View::OnRotation)
+	ON_COMMAND(ID_MASK, &CImageProcessing2LDJ20200721View::OnMask)
 END_MESSAGE_MAP()
 
 // CImageProcessing2LDJ20200721View 생성/소멸
@@ -309,5 +331,232 @@ void CImageProcessing2LDJ20200721View::OnHistStretch()
 	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	pDoc->OnHistStretch();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnEndInSearch()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnEndInSearch();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnHistogram()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHistogram();
+	Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnHistoEqual()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHistoEqual();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnHistoSpec()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHistoSpec();
+		Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnEmbossing()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnEmbossing();
+	Invalidate(TRUE);
+}
+
+void CImageProcessing2LDJ20200721View::OnBlurr()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnBlurr();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnGaussianFilter()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnGaussianFilter();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnSharpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnSharpening();
+	Invalidate(TRUE);
+}
+
+
+
+void CImageProcessing2LDJ20200721View::OnHpfSharpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHpfSharpening();
+	Invalidate(TRUE);
+}
+
+
+
+
+void CImageProcessing2LDJ20200721View::OnLpfsharpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnLpfsharpening();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnDiffOperatorHor()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnDiffOperatorHor();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnHomogenOperator()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnHomogenOperator();
+	Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnLaplacian()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnLaplacian();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnNearest()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnNearest();
+	Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnBilinear()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnBilinear();
+	Invalidate(TRUE);
+
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMediansub()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnMediansub();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMeansub()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnMeansub();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnTranslation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnTranslation();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMirrorhor()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnMirrorhor();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMirrorver()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnMirrorver();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnRotation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnRotation();
+	Invalidate(TRUE);
+}
+
+
+void CImageProcessing2LDJ20200721View::OnMask()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnMask();
 	Invalidate(TRUE);
 }
