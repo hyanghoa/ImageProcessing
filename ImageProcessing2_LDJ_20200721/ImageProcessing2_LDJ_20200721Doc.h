@@ -29,6 +29,9 @@ public:
 
 // 구현입니다.
 public:
+	BITMAPFILEHEADER dibHf;    // 비트맵 파일헤드 구조체
+	BITMAPINFOHEADER dibHi;    // 비트맵 영상헤드 구조체
+	RGBQUAD palRGB[256];        // 팔레트 정보 구조체 배열
 	virtual ~CImageProcessing2LDJ20200721Doc();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -47,12 +50,15 @@ protected:
 #endif // SHARED_HANDLERS
 public:
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+	virtual BOOL OnSaveDocument(LPCTSTR lpszPathName);
 	unsigned char* m_InputImage;
 	int m_width;
 	int m_height;
 	int m_size;
 	afx_msg void OnDownSampling();
 	unsigned char* m_OutputImage;
+	unsigned char* m_OutputImage_left;
+	unsigned char* m_OutputImage_right;
 	int m_Re_width;
 	int m_Re_height;
 	int m_Re_size;
@@ -110,4 +116,6 @@ public:
 	afx_msg void OnMirrorver();
 	afx_msg void OnRotation();
 	afx_msg void OnMask();
+	void OnComb();
+	
 };

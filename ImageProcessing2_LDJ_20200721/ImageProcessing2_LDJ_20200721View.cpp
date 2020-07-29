@@ -67,6 +67,8 @@ BEGIN_MESSAGE_MAP(CImageProcessing2LDJ20200721View, CView)
 	ON_COMMAND(ID_MIRRORVER, &CImageProcessing2LDJ20200721View::OnMirrorver)
 	ON_COMMAND(ID_ROTATION, &CImageProcessing2LDJ20200721View::OnRotation)
 	ON_COMMAND(ID_MASK, &CImageProcessing2LDJ20200721View::OnMask)
+	ON_COMMAND(ID_comb, &CImageProcessing2LDJ20200721View::OnComb)
+
 END_MESSAGE_MAP()
 
 // CImageProcessing2LDJ20200721View 생성/소멸
@@ -74,11 +76,21 @@ END_MESSAGE_MAP()
 CImageProcessing2LDJ20200721View::CImageProcessing2LDJ20200721View() noexcept
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
+	BmInfo = (BITMAPINFO*)malloc(sizeof(BITMAPINFO) + 256 * sizeof(RGBQUAD));
+	for (int i = 0; i < 256; i++)
+	{
+		BmInfo->bmiColors[i].rgbRed = i;
+		BmInfo->bmiColors[i].rgbGreen = i;
+		BmInfo->bmiColors[i].rgbBlue = i;
+			BmInfo->bmiColors[i].rgbReserved = 0;
+	}
+
 
 }
 
 CImageProcessing2LDJ20200721View::~CImageProcessing2LDJ20200721View()
 {
+	free(BmInfo);
 }
 
 BOOL CImageProcessing2LDJ20200721View::PreCreateWindow(CREATESTRUCT& cs)
@@ -93,30 +105,53 @@ BOOL CImageProcessing2LDJ20200721View::PreCreateWindow(CREATESTRUCT& cs)
 
 void CImageProcessing2LDJ20200721View::OnDraw(CDC* pDC)
 {
-	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument(); // Doc 클래스 참조
+	#define WIDTHBYTES(bits)	(((bits)+31)/32*4);        //이미지 가로 바이트 길이는 4바이트의 배수
+	//BmInfo;
+	int height;
+	int width;
+	int rwsize;
+
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
-	// TODO: add draw code for native data here
-	int i, j;
-	unsigned char R, G, B;
-	// 입력 영상 출력
-	for (i = 0; i < pDoc->m_height; i++) {
-		for (j = 0; j < pDoc->m_width; j++) {
-			R = pDoc->m_InputImage[i * pDoc->m_width + j];
-			G = B = R;
-			pDC->SetPixel(j + 5, i + 5, RGB(R, G, B));
-		}
+
+	if (!pDoc)
+		return;
+
+	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
+	if (pDoc->m_InputImage == NULL)
+		return;
+
+	//24비트 비트맵 파일의 영상출력
+	if (pDoc->dibHi.biBitCount == 8) {
+		height = pDoc->dibHi.biHeight;
+		width = pDoc->dibHi.biWidth;
+		rwsize = WIDTHBYTES(pDoc->dibHi.biBitCount * pDoc->dibHi.biWidth);
+		BmInfo->bmiHeader = pDoc->dibHi;
+		SetDIBitsToDevice(pDC->GetSafeHdc(), 0, 0, width, height, 0, 0, 0, height, pDoc->m_InputImage, BmInfo, DIB_PAL_COLORS);
 	}
-	// 축소된 영상 출력
-	for (i = 0; i < pDoc->m_Re_height; i++) {
-		for (j = 0; j < pDoc->m_Re_width; j++) {
-			R = pDoc->m_OutputImage[i * pDoc->m_Re_width + j];
-			G = B = R;
-			pDC->SetPixel(j + pDoc->m_width + 10, i + 5, RGB(R, G, B));
+	else	//8비트 컬러일 경우
+	{
+		int index;
+		rwsize = WIDTHBYTES(pDoc->dibHi.biBitCount * pDoc->dibHi.biWidth);
+
+		//팔레트를 읽어들이며 반복출력
+		for (int i = 0; i < pDoc->dibHi.biHeight; i++){
+			for (int j = 0; j < pDoc->dibHi.biWidth; j++) {
+				index = pDoc->m_InputImage[i * rwsize + j];
+				BYTE R = pDoc->palRGB[index].rgbRed;
+				BYTE G = pDoc->palRGB[index].rgbGreen;
+				BYTE B = pDoc->palRGB[index].rgbBlue;
+
+			//영상 반전출력
+				pDC->SetPixel(j, pDoc->dibHi.biHeight - i - 1, RGB(R, G, B));
+			}
 		}
 	}
 
-
+	// ===============================================
+	
 }
+
  
 
 // CImageProcessing2LDJ20200721View 인쇄
@@ -554,9 +589,22 @@ void CImageProcessing2LDJ20200721View::OnRotation()
 
 void CImageProcessing2LDJ20200721View::OnMask()
 {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	// TODO: 여기에 명령 처리기 코드를 추가합니다CImageProcessing2LDJ20200721
 	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	pDoc->OnMask();
 	Invalidate(TRUE);
 }
+
+
+void CImageProcessing2LDJ20200721View::OnComb()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImageProcessing2LDJ20200721Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	pDoc->OnComb();
+	Invalidate(TRUE);
+
+
+}
+

@@ -29,6 +29,7 @@ protected:
 
 // 구현입니다.
 public:
+	BITMAPINFO* BmInfo;
 	virtual ~CImageProcessing2LDJ20200721View();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -86,6 +87,7 @@ public:
 	afx_msg void OnMirrorver();
 	afx_msg void OnRotation();
 	afx_msg void OnMask();
+	afx_msg void OnComb();
 };
 
 #ifndef _DEBUG  // ImageProcessing2_LDJ_20200721View.cpp의 디버그 버전

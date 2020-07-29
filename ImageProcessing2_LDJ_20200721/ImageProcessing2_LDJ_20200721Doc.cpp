@@ -99,14 +99,7 @@ BOOL CImageProcessing2LDJ20200721Doc::OnNewDocument()
 
 void CImageProcessing2LDJ20200721Doc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: 여기에 저장 코드를 추가합니다.
-	}
-	else
-	{
-		// TODO: 여기에 로딩 코드를 추가합니다.
-	}
+
 }
 
 #ifdef SHARED_HANDLERS
@@ -179,47 +172,64 @@ void CImageProcessing2LDJ20200721Doc::Dump(CDumpContext& dc) const
 
 
 // CImageProcessing2LDJ20200721Doc 명령
-
-
 BOOL CImageProcessing2LDJ20200721Doc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 	if (!CDocument::OnOpenDocument(lpszPathName))
 		return FALSE;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-	CFile File; // 파일 객체 선언
-	File.Open(lpszPathName, CFile::modeRead | CFile::typeBinary);
 
-	// 파일 열기 대화상자에서 선택한 파일을 지정하고 읽기 모드 선택
-	// 이 책에서는 영상의 크기 256*256, 512*512, 640*480만을 사용한다.
+	//CFile에서 처리
+	CFile hFile;        //파일을 읽어들이면 이 클래스 형식으로 저장.
+	int height;        //이미지의 높이를 저장할 변수
+	int width;        //이미지의 가로길이를 저장할 변수
 
-	if(File.GetLength() == 256*256){ // RAW 파일의 크기 결정
-		m_height = 256;
-		m_width = 256;
+	hFile.Open(lpszPathName, CFile::modeRead | CFile::typeBinary);    //파일 열기
+	hFile.Read(&dibHf, sizeof(BITMAPFILEHEADER));                          //dibHf에 파일헤더를 읽어들인다.
+
+	//이 파일이 BMP파일인지 검사 
+	if (dibHf.bfType != 0x4D42)
+	{
+		AfxMessageBox(L"Not BMP file!!");                                        //프로젝트 생성시 유니코드를 사용하게 할 경우
+		return FALSE;                                                                      //L을 붙여준다
 	}
-	else if(File.GetLength() == 512*512){ // RAW 파일의 크기 결정
-		m_height = 512;
-		m_width = 512;
-	}
-	else if(File.GetLength() == 640*480){ // RAW 파일의 크기 결정
-		m_height = 480;
-		m_width = 640;
-	}
-	else{
-		AfxMessageBox(L"Not Support Image Size"); // 해당 크기가 없는 경우
-		return 0;
-	}
-	m_size = m_width * m_height; // 영상의 크기 계산
-	m_InputImage = new unsigned char [m_size];
 
-	// 입력 영상의 크기에 맞는 메모리 할당
-	for(int i = 0 ; i<m_size ; i++)
-		m_InputImage[i] = 255; // 초기화
+	hFile.Read(&dibHi, sizeof(BITMAPINFOHEADER));                             //영상정보의 header를 읽기
 
-	File.Read(m_InputImage, m_size); // 입력 영상 파일 읽기
-	File.Close(); // 파일 닫기
+	if (dibHi.biBitCount != 8 && dibHi.biBitCount != 24)                                //8,24비트가 아닐경우
+	{
+		AfxMessageBox(L"Gray/True Color Possible!!");
+		return FALSE;
+	}
 
-		return TRUE;
+	if (dibHi.biBitCount == 8)
+		//8비트의 경우 팔레트를 생성해 주어야 한다. 총 256가지 색이므로 그 길이만큼 읽어들인다
+		hFile.Read(palRGB, sizeof(RGBQUAD) * 256);
+
+	//메모리 할당
+	int ImgSize;
+
+	if (dibHi.biBitCount == 8)
+	{
+		ImgSize = hFile.GetLength() - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER) - 256 * sizeof(RGBQUAD);    //이미지의 크기는 파일 총 길이에서, 두 헤드와 팔레트의 사이즈를 
+	}                                                                       //제외한다.
+	else if (dibHi.biBitCount == 24) //컬러영상
+	{
+		ImgSize = hFile.GetLength() - sizeof(BITMAPFILEHEADER) - sizeof(BITMAPINFOHEADER);
+	}
+
+	//이미지를 저장, 출력할 배열생성.
+	m_InputImage = new unsigned char[ImgSize];
+	m_OutputImage = new unsigned char[ImgSize];
+
+	hFile.Read(m_InputImage, ImgSize);
+	hFile.Close();
+
+	//이미지의 길이정보
+	height = dibHi.biHeight;
+	width = dibHi.biWidth;
+
+	return TRUE;
 }
 
 
@@ -1565,14 +1575,16 @@ void CImageProcessing2LDJ20200721Doc::OnRotation()
 
 void CImageProcessing2LDJ20200721Doc::OnMask()
 {
-	int i, j;
-	double DiffHorMask[3][3]
-		= { {0., -1., 0.}, {0., 1., 0.}, {0., 0., 0.} };
-	// 수평 필터 선택
+	CConstDlg dlg;
+	int i, j, k;
 	m_Re_height = m_height;
 	m_Re_width = m_width;
 	m_Re_size = m_Re_height * m_Re_width;
 	m_OutputImage = new unsigned char[m_Re_size];
+
+	double DiffHorMask[3][3]
+		= { {0., -1., 0.}, {0., 1., 0.}, {0., 0., 0.} };
+	// 수평 필터 선택
 	m_tempImage = OnMaskProcess(m_InputImage, DiffHorMask);
 	// m_tempImage = OnScale(m_tempImage, m_Re_height, m_Re_width);
 	for (i = 0; i < m_Re_height; i++) {
@@ -1583,6 +1595,7 @@ void CImageProcessing2LDJ20200721Doc::OnMask()
 				m_tempImage[i][j] = 0.;
 		}
 	}
+
 	for (i = 0; i < m_Re_height; i++) {
 		for (j = 0; j < m_Re_width; j++) {
 			m_OutputImage[i * m_Re_width + j]
@@ -1590,14 +1603,435 @@ void CImageProcessing2LDJ20200721Doc::OnMask()
 		}
 	}
 
+	// binarization
+	if (dlg.DoModal() == IDOK) {
+		for (i = 0; i < m_size; i++) {
+			if (m_OutputImage[i] >= dlg.m_Const)
+				m_OutputImage[i] = 255; // 임계 값보다 크면 255 출력
+			else
+				m_OutputImage[i] = 0; // 임계 값보다 작으면 0 출력
+		}
+	}
+
+
+	// =============================================================================
+	// 흰색 바탕
+	// mask 반전
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_height; j++) {
+	//		if (m_OutputImage[i * m_Re_height + j] == 255.) {
+	//			m_OutputImage[i * m_Re_height + j] = 0.;
+	//		}
+	//		else {
+	//			m_OutputImage[i * m_Re_height + j] = 255.;
+	//		}
+	//	}
+	//}
+
+	//// fill
+	//int count[256 * 256] = { 255, };
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			count[i]++;
+	//		}
+	//	}
+	//}
+
+	//m_OutputImage_left = new unsigned char[m_Re_size];
+	//m_OutputImage_right = new unsigned char[m_Re_size];
+	//// vertical
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[j * m_Re_width + i] == 0.) {
+	//			for (k = j - 1; k > 0; k--) {
+	//				m_OutputImage[k * m_Re_width + i] = 0.;
+	//				m_OutputImage_left[k * m_Re_width + i] = 0.;
+	//				m_OutputImage_right[k * m_Re_width + i] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//// left horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			for (k = j + 1; k < m_Re_width; k++) {
+	//				m_OutputImage_left[i * m_Re_width + k] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// right horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			for (k = j + 1; k > 0; k--) {
+	//				m_OutputImage_right[i * m_Re_width + k] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// 교집합
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage_left[i * m_Re_width + j] == 0. && m_OutputImage_right[i * m_Re_width + j] == 0.) {
+	//			m_OutputImage[i * m_Re_width + j] = 0.;
+	//		}
+	//	}
+	//}
+
+	//// AND 연산
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if ((m_OutputImage[i * m_Re_width + j] * m_InputImage[i * m_Re_width + j]) != 0. ) {
+	//			m_OutputImage[i * m_Re_width + j] = m_InputImage[i * m_Re_width + j];
+	//		}
+	//		else {
+	//			m_OutputImage[i * m_Re_width + j] = 0.;
+	//		}
+	//	}
+	//}
+
+	// 검은색 바탕
+	//===========================================
+	// fill
+	int count[256 * 256] = { 0, };
 	for (i = 0; i < m_Re_height; i++) {
 		for (j = 0; j < m_Re_width; j++) {
-			if (m_OutputImage[i * m_Re_width + j] >= 30){
-				for (j = 0; j < m_Re_width; j++) {
-					m_OutputImage[i * m_Re_width + j] = 255;
-				}
-				break; 
+			if (m_OutputImage[i * m_Re_width + j] == 255.) {
+				count[i]++;
 			}
 		}
 	}
+
+	m_OutputImage_left = new unsigned char[m_Re_size];
+	m_OutputImage_right = new unsigned char[m_Re_size];
+	// vertical
+	for (i = m_Re_height; i > 0; i--) {
+		for (j = m_Re_width - 30; j > 30; j--) {
+			if (m_OutputImage[j * m_Re_width + i] == 255.) {
+				for (k = j - 1; k > 0; k--) {
+					m_OutputImage[k * m_Re_width + i] = 255.;
+					m_OutputImage_left[k * m_Re_width + i] = 255.;
+					m_OutputImage_right[k * m_Re_width + i] = 255.;
+				}
+			}
+		}
+	}
+
+	// left horizon
+	for (i = m_Re_height; i > 0; i--) {
+		for (j = m_Re_width - 30; j > 30; j--) {
+			if (m_OutputImage[i * m_Re_width + j] == 255.) {
+				for (k = j + 1; k < m_Re_width; k++) {
+					m_OutputImage_left[i * m_Re_width + k] = 255.;
+				}
+			}
+		}
+	}
+
+
+	// right horizon
+	for (i = m_Re_height; i > 0; i--) {
+		for (j = m_Re_width - 30; j > 30; j--) {
+			if (m_OutputImage[i * m_Re_width + j] == 255.) {
+				for (k = j + 1; k > 0; k--) {
+					m_OutputImage_right[i * m_Re_width + k] = 255.;
+				}
+			}
+		}
+	}
+
+
+	// 교집합
+	for (i = 0; i < m_Re_height; i++) {
+		for (j = 0; j < m_Re_width; j++) {
+			if (m_OutputImage_left[i * m_Re_width + j] == 255. && m_OutputImage_right[i * m_Re_width + j] == 255.) {
+				m_OutputImage[i * m_Re_width + j] = 255.;
+			}
+		}
+	}
+	
+	// AND 연산
+	for (i = 0; i < m_Re_height; i++) {
+		for (j = 0; j < m_Re_width; j++) {
+			if ((m_OutputImage[i * m_Re_width + j] * m_InputImage[i * m_Re_width + j]) != 0. ) {
+				m_OutputImage[i * m_Re_width + j] = m_InputImage[i * m_Re_width + j];
+			}
+			else {
+				m_OutputImage[i * m_Re_width + j] = 0.;
+			}
+		}
+	}
+}
+
+
+BOOL CImageProcessing2LDJ20200721Doc::OnSaveDocument(LPCTSTR lpszPathName)
+{
+	//TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	CFile hFile;
+
+	if (!hFile.Open(lpszPathName, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary))
+		return FALSE;
+
+	//정보저장
+	hFile.Write(&dibHf, sizeof(BITMAPFILEHEADER));
+	hFile.Write(&dibHi, sizeof(BITMAPINFOHEADER));
+
+	if (dibHi.biBitCount == 8)
+		hFile.Write(palRGB, sizeof(RGBQUAD) * 256);
+
+	hFile.Write(m_OutputImage, dibHi.biSizeImage);
+	hFile.Close();
+
+	return TRUE;
+
+}
+
+
+void CImageProcessing2LDJ20200721Doc::OnComb()
+{
+	// TODO: 여기에 구현 코드 추가.
+
+
+	// =================================================
+	//CFile File;
+	//CFileDialog OpenDlg(TRUE);  int i;
+	//unsigned char* temp, * masktemp, maskvalue;
+
+	//m_Re_height = m_height;  m_Re_width = m_width;
+	//m_Re_size = m_Re_height * m_Re_width;
+	//m_OutputImage = new unsigned char[m_Re_size];
+	//AfxMessageBox(L"합성할 영상을 입력하시오");
+	//if (OpenDlg.DoModal() == IDOK) { // 합성할 영상을 입력
+	//	File.Open(OpenDlg.GetPathName(), CFile::modeRead);
+	//	temp = new unsigned char[m_size];  
+	//	File.Read(temp, m_size);
+
+	//	if ((unsigned)512 * 512 != File.GetLength()) {
+	//		AfxMessageBox(L"Image size not matched");
+	//		// 영상의 크기가 같을 때
+	//		return;
+	//	}
+	//	File.Close();
+	//}
+	//// 입력 영상, 합성할 영상, 마스크 영상의 크기가 같아야 한다.
+	//AfxMessageBox(L"입력 영상의 마스크 영상을 입력하시오");
+	//if (OpenDlg.DoModal() == IDOK) { // 입력 영상의 마스크 영상
+	//	File.Open(OpenDlg.GetPathName(), CFile::modeRead);  
+	//	masktemp = new unsigned char[m_size];  
+	//	File.Read(masktemp, m_size);
+	//	File.Close();
+	//}
+
+	//int j, k;
+	//m_Re_height = m_height;
+	//m_Re_width = m_width;
+	//m_Re_size = m_Re_height * m_Re_width;
+	//m_OutputImage = new unsigned char[m_Re_size];
+
+	//double DiffHorMask[3][3]
+	//	= { {0., -1., 0.}, {0., 1., 0.}, {0., 0., 0.} };
+	//// 수평 필터 선택
+	//m_tempImage = OnMaskProcess(temp, DiffHorMask);
+	//// m_tempImage = OnScale(m_tempImage, m_Re_height, m_Re_width);
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_tempImage[i][j] > 255.)
+	//			m_tempImage[i][j] = 255.;
+	//		if (m_tempImage[i][j] < 0.)
+	//			m_tempImage[i][j] = 0.;
+	//	}
+	//}
+
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		m_OutputImage[i * m_Re_width + j]
+	//			= (unsigned char)m_tempImage[i][j];
+	//	}
+	//}
+
+	//// binarization
+
+	//for (i = 0; i < m_size; i++) {
+	//	if (m_OutputImage[i] >= 22)
+	//		m_OutputImage[i] = 255; // 임계 값보다 크면 255 출력
+	//	else
+	//		m_OutputImage[i] = 0; // 임계 값보다 작으면 0 출력
+	//}
+	
+	// =============================================================================
+	// 흰색 바탕
+	// mask 반전
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_height; j++) {
+	//		if (m_OutputImage[i * m_Re_height + j] == 255.) {
+	//			m_OutputImage[i * m_Re_height + j] = 0.;
+	//		}
+	//		else {
+	//			m_OutputImage[i * m_Re_height + j] = 255.;
+	//		}
+	//	}
+	//}
+
+	//// fill
+	//int count[256 * 256] = { 255, };
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			count[i]++;
+	//		}
+	//	}
+	//}
+
+	//m_OutputImage_left = new unsigned char[m_Re_size];
+	//m_OutputImage_right = new unsigned char[m_Re_size];
+	//// vertical
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[j * m_Re_width + i] == 0.) {
+	//			for (k = j - 1; k > 0; k--) {
+	//				m_OutputImage[k * m_Re_width + i] = 0.;
+	//				m_OutputImage_left[k * m_Re_width + i] = 0.;
+	//				m_OutputImage_right[k * m_Re_width + i] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//// left horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			for (k = j + 1; k < m_Re_width; k++) {
+	//				m_OutputImage_left[i * m_Re_width + k] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// right horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 0.) {
+	//			for (k = j + 1; k > 0; k--) {
+	//				m_OutputImage_right[i * m_Re_width + k] = 0.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// 교집합
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage_left[i * m_Re_width + j] == 0. && m_OutputImage_right[i * m_Re_width + j] == 0.) {
+	//			m_OutputImage[i * m_Re_width + j] = 0.;
+	//		}
+	//	}
+	//}
+
+	//// AND 연산
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if ((m_OutputImage[i * m_Re_width + j] * m_InputImage[i * m_Re_width + j]) != 0. ) {
+	//			m_OutputImage[i * m_Re_width + j] = m_InputImage[i * m_Re_width + j];
+	//		}
+	//		else {
+	//			m_OutputImage[i * m_Re_width + j] = 0.;
+	//		}
+	//	}
+	//}
+
+	// 검은색 바탕
+	//===========================================
+	// fill
+	//int count[256 * 256] = { 0, };
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 255.) {
+	//			count[i]++;
+	//		}
+	//	}
+	//}
+
+	//m_OutputImage_left = new unsigned char[m_Re_size];
+	//m_OutputImage_right = new unsigned char[m_Re_size];
+	//// vertical
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[j * m_Re_width + i] == 255.) {
+	//			for (k = j - 1; k > 0; k--) {
+	//				m_OutputImage[k * m_Re_width + i] = 255.;
+	//				m_OutputImage_left[k * m_Re_width + i] = 255.;
+	//				m_OutputImage_right[k * m_Re_width + i] = 255.;
+	//			}
+	//		}
+	//	}
+	//}
+
+	//// left horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 255.) {
+	//			for (k = j + 1; k < m_Re_width; k++) {
+	//				m_OutputImage_left[i * m_Re_width + k] = 255.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// right horizon
+	//for (i = m_Re_height; i > 0; i--) {
+	//	for (j = m_Re_width - 30; j > 30; j--) {
+	//		if (m_OutputImage[i * m_Re_width + j] == 255.) {
+	//			for (k = j + 1; k > 0; k--) {
+	//				m_OutputImage_right[i * m_Re_width + k] = 255.;
+	//			}
+	//		}
+	//	}
+	//}
+
+
+	//// 교집합
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if (m_OutputImage_left[i * m_Re_width + j] == 255. && m_OutputImage_right[i * m_Re_width + j] == 255.) {
+	//			m_OutputImage[i * m_Re_width + j] = 255.;
+	//		}
+	//	}
+	//}
+
+	//// AND 연산
+	//for (i = 0; i < m_Re_height; i++) {
+	//	for (j = 0; j < m_Re_width; j++) {
+	//		if ((m_OutputImage[i * m_Re_width + j] * m_InputImage[i * m_Re_width + j]) != 0.) {
+	//			m_OutputImage[i * m_Re_width + j] = m_InputImage[i * m_Re_width + j];
+	//		}
+	//		else {
+	//			m_OutputImage[i * m_Re_width + j] = 0.;
+	//		}
+	//	}
+	//}
+	//===================================================
+	//for (i = 0; i < m_size; i++) {
+	//	maskvalue = 255 - masktemp[i];
+	//	// 영상의 최대값에서 마스크 영상의 값을 뺀다.
+	//	m_OutputImage[i]
+	//	= (m_InputImage[i] & masktemp[i]) | (temp[i] & maskvalue);
+	//	// 입력 영상과 마스크 영상은 AND 연산을 하고, 합성할 영상은
+	//	// (255-마스크 영상) 값과 AND 연산을 실행한 후 두 값을 더한다.
+	//}
+	
+	
+
+
 }
